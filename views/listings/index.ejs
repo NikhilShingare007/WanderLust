@@ -1,0 +1,37 @@
+<% layout("/layouts/boilerplate") %>
+<h3>All Listings</h3>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+  <% for (let listing of allListings) { %>
+  <div class="col">
+    <a
+      href="/listings/<%= listing._id %>"
+      class="text-decoration-none text-dark d-block h-100"
+    >
+      <div class="card h-100">
+        <img
+          src="<%= listing.image %>"
+          class="card-img-top"
+          alt="Listing-image"
+          style="height: 20rem; object-fit: cover"
+        />
+
+        <!-- Image not found  -->
+        <% if(listing.image
+        ==="https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGdvYXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60")
+        { %>
+        <div class="card-img-overlay">No Image</div>
+        <% }else{ %>
+        <div class="card-img-overlay"></div>
+        <% } %>
+
+        <div class="card-body">
+          <p class="card-text mb-0">
+            <strong><%= listing.title %></strong><br />
+            &#8377;<%= listing.price.toLocaleString("en-IN") %>/ Night
+          </p>
+        </div>
+      </div>
+    </a>
+  </div>
+  <% } %>
+</div>

@@ -1,0 +1,37 @@
+<% layout("/layouts/boilerplate")%>
+<div class="row">
+  <div class="col offset-3">
+    <br /><br />
+    <h3>Listing Details</h3>
+    <div class="card" style="width: 40rem">
+      <img
+        src="<%=listings.image%>"
+        class="card-img-top"
+        alt="listing_image"
+        style="height: 16rem"
+      />
+      <div class="card-body">
+        <p class="card-text mb-0">
+          <strong><%= listings.title %></strong><br />
+          <%=listings.description%><br />
+          ₹<%= listings.price.toLocaleString("en-IN") %><br />
+          <%=listings.location%><br />
+          <%=listings.country%>
+        </p>
+        <div class="btn-show mt-2">
+          <button class="btn btn-outline-primary btn-edit">
+            <a href="/listings/<%=listings._id%>/edit">Edit</a>
+          </button>
+
+          <form
+            method="POST"
+            action="/listings/<%= listings._id%>?_method=DELETE"
+            onsubmit="return confirm(`Do you want to delete this Listings?`);"
+          >
+            <button class="btn btn-outline-dark offset-4">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
