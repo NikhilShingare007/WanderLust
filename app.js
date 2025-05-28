@@ -2,13 +2,14 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const Listing = require("./models/listings.js");
+const Review = require("./models/reviews.js");
 const ejs = require("ejs");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const customError = require("./utils/CustomError.js");
-const { listingSchema } = require("./joiSchema.js");
+const { listingSchema, reviewSchema } = require("./joiSchema.js");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -30,15 +31,25 @@ async function main() {
   await mongoose.connect("mongodb://127.0.0.1:27017/Wanderlust");
 }
 
-const validateListing = (req,res,next) => {
+const validateListing = (req, res, next) => {
   const { error } = listingSchema.validate(req.body);
-  console.log(error)
-    if(error) {
-      throw new customError(400, error);
-    }else{
-      next();
-    }
-}
+  console.log(error);
+  if (error) {
+    throw new customError(400, error);
+  } else {
+    next();
+  }
+};
+
+const validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body);
+  console.log(error);
+  if (error) {
+    throw new customError(400, error);
+  } else {
+    next();
+  }
+};
 
 app.get("/", (req, res) => {
   res.send("I am root");
@@ -63,7 +74,7 @@ app.get(
   "/listings/:id",
   wrapAsync(async (req, res) => {
     const { id } = req.params;
-    const listings = await Listing.findById(id);
+    const listings = await Listing.findById(id).populate("reviews");
     res.render("listings/show.ejs", { listings });
   })
 );
@@ -114,9 +125,37 @@ app.delete(
   })
 );
 
+//Review Route
+//post Review
+app.post(
+  "/listings/:id/reviews",
+  validateReview,
+  wrapAsync(async (req, res) => {
+    const listings = await Listing.findById(req.params.id);
+    const newReview = new Review(req.body.review);
+
+    listings.reviews.push(newReview);
+
+    await newReview.save();
+    await listings.save();
+
+    console.log("Review Saved Successfully.");
+    res.redirect(`/listings/${listings._id}`);
+  })
+);
+
+//Delete Review
+app.delete("/listings/:id/reviews/:reviewId", wrapAsync(async (req,res) => {
+  const {id, reviewId } = req.params;
+  await Listing.findByIdAndUpdate(id, {$pull : {reviews : reviewId}});
+  await Review.findByIdAndDelete(reviewId);
+
+  res.redirect(`/listings/${id}`);
+}));
+
 app.use((err, req, res, next) => {
   let { status = 500, message = "Something went wrong" } = err;
-  res.status(status).render("listings/error.ejs", {message});
+  res.status(status).render("listings/error.ejs", { message });
 });
 
 app.listen(8080, () => {

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const initData = require("./data.js");
 const Listing = require("../models/listings.js");
+const Review = require("../models/reviews.js");
 
 main()
   .then(() => {
@@ -16,6 +17,7 @@ async function main() {
 
 const initDB = async () => {
   await Listing.deleteMany({});
+  await Review.deleteMany({});
   await Listing.insertMany(initData.data);
 
   console.log("Data was initialized");
