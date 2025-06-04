@@ -20,6 +20,20 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
+const sessionOptions = {
+  secret: "MyNameIsNikhil",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+  },
+};
+
+app.use(session(sessionOptions));
+app.use(flash());
+
 main()
   .then(() => {
     console.log("Connected to DB");
@@ -32,49 +46,14 @@ async function main() {
   await mongoose.connect("mongodb://127.0.0.1:27017/Wanderlust");
 }
 
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
+
 app.use("/listings", listings);
 app.use("/listings/:id/reviews", reviews);
-
-// const sessionOptions = {
-//   secret: "MyNameIsNikhil",
-//   resave: false,
-//   saveUninitialized: true,
-// };
-
-// app.use(session(sessionOptions));
-// app.use(flash());
-
-// app.use((req, res, next) => {
-//   res.locals.errorMsg = req.flash("Error");
-//   res.locals.successMsg = req.flash("Success");
-//   next();
-// });
-
-// app.get("/register", (req, res) => {
-//   let { name = "Friend" } = req.query;
-//   req.session.name = name;
-
-//   if (name === "Friend") {
-//     req.flash("Error", "User Not Registered Yet");
-//   } else {
-//     req.flash("Success", "User Registered Successfully");
-//   }
-//   console.log(req.flash);
-//   res.redirect("/hello");
-// });
-
-// app.get("/hello", (req, res) => {
-//   res.render("Experiments/register.ejs", { name: req.session.name });
-// });
-
-// app.get("/session", (req, res) => {
-//   if (req.session.count) {
-//     req.session.count++;
-//   } else {
-//     req.session.count = 1;
-//   }
-//   res.send(`you sent a request ${req.session.count} times`);
-// });
 
 app.get("/", (req, res) => {
   res.send("I am root");
