@@ -8,9 +8,13 @@ const ejsMate = require("ejs-mate");
 const customError = require("./utils/CustomError.js");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user.js");
 
-const listings = require("./routes/listing.js");
-const reviews = require("./routes/review.js");
+const listingsRouter = require("./routes/listing.js");
+const reviewsRouter = require("./routes/review.js");
+const userRouter = require("./routes/user.js");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -34,6 +38,13 @@ const sessionOptions = {
 app.use(session(sessionOptions));
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 main()
   .then(() => {
     console.log("Connected to DB");
@@ -52,8 +63,19 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/listings", listings);
-app.use("/listings/:id/reviews", reviews);
+// app.get("/demoUser",async (req,res) => {
+//   let fakeUser = new User({
+//     email: "nikFake@getMaxListeners.com",
+//     username: "nik123",
+//   });
+
+//   let RegisteredUser = await User.register(fakeUser, "HelloWorld");
+//   res.send(RegisteredUser);
+// });
+
+app.use("/listings", listingsRouter);
+app.use("/listings/:id/reviews", reviewsRouter);
+app.use("/", userRouter);
 
 app.get("/", (req, res) => {
   res.send("I am root");
