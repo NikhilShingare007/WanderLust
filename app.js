@@ -60,18 +60,9 @@ async function main() {
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
+  res.locals.currentUser = req.user;
   next();
 });
-
-// app.get("/demoUser",async (req,res) => {
-//   let fakeUser = new User({
-//     email: "nikFake@getMaxListeners.com",
-//     username: "nik123",
-//   });
-
-//   let RegisteredUser = await User.register(fakeUser, "HelloWorld");
-//   res.send(RegisteredUser);
-// });
 
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);

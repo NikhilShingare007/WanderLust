@@ -1,6 +1,8 @@
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/listings"><i class="fa-brands fa-slack"></i></a>
+    <a class="navbar-brand" href="/listings"
+      ><i class="fa-brands fa-slack"></i
+    ></a>
     <button
       class="navbar-toggler"
       type="button"
@@ -14,6 +16,14 @@
         <a class="nav-link" aria-current="page" href="/">Home</a>
         <a class="nav-link" href="/listings">All Listings</a>
         <a class="nav-link" href="/listings/new">Add new listing</a>
+      </div>
+      <div class="navbar-nav ms-auto">
+        <% if(!currentUser) { %>
+        <a class="nav-link" href="/signup">Sign up</a>
+        <a class="nav-link" href="/login">Log in</a>
+        <% } %> <% if(currentUser) { %>
+        <a class="nav-link" href="/logout">Logout</a>
+        <% } %>
       </div>
     </div>
   </div>

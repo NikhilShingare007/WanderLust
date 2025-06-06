@@ -9,15 +9,16 @@
         class="card-img-top mb-3"
         alt="listing_image"
         style="height: 16rem"
-
       />
       <div class="card-body">
-        <p class="card-text mb-0 ps-2">
-          <%=listings.description%><br />
-          ₹<%= listings.price.toLocaleString("en-IN") %><br />
-          <%=listings.location%><br />
-          <%=listings.country%>
+        <p class="card-text">
+          Owner name -: <b><i><%= listings.owner.username %></i></b>
         </p>
+        <p class="card-text"><%=listings.description%></p>
+        <p class="card-text">₹<%= listings.price.toLocaleString("en-IN") %></p>
+        <p class="card-text"><%=listings.location%></p>
+        <p class="card-text"><%=listings.country%></p>
+        <% if (currentUser && listings.owner._id.equals(currentUser._id)) { %>
         <div class="btn-show mt-2 ps-2">
           <button class="btn btn-outline-primary btn-edit">
             <a href="/listings/<%=listings._id%>/edit">Edit</a>
@@ -31,6 +32,7 @@
             <button class="btn btn-outline-dark offset-4">Delete</button>
           </form>
         </div>
+        <% } %>
       </div>
     </div>
   </div>
@@ -38,6 +40,7 @@
   <div class="col-8 offset-2">
     <hr />
     <h4>Leave a Review</h4>
+    <% if(currentUser) {%>
     <form
       method="POST"
       action="/listings/<%= listings._id%>/reviews"
@@ -71,25 +74,36 @@
         <button class="btn btn-outline-dark">Submit</button>
       </div>
     </form>
+    <% } else { %>
+    <p>You need to log in for Write a Review..</p>
+    <% } %>
   </div>
 
-  <hr />
+  <hr class="col-8 offset-2" />
   <div class="row offset-2">
     <p class="mb-3"><b>All Reviews</b></p>
-  <% if(listings.reviews && listings.reviews.length > 0) { %> <% for(let review of listings.reviews)
-  {%>
-  <div class="card col-4 mb-2 mt-2 ms-3 pb-1">
-    <div class="card-body">
-      <div class="card-title"><b>Nik S</b></div>
-      <div class="card-text"><b><%= review.rating%></b> Stars</div>
-      <div class="card-text"><%= review.comment%></div>
+    <% if(listings.reviews && listings.reviews.length > 0) { %> <% for(let
+    review of listings.reviews) {%>
+    <div class="card col-4 mb-2 mt-2 ms-3 pb-1">
+      <div class="card-body">
+        <div class="card-title"><b>@<%= review.author.username%></b></div>
+        <div class="card-text"><b><%= review.rating%></b> Stars</div>
+        <div class="card-text"><%= review.comment%></div>
+      </div>
+      <% if (currentUser && review.author._id.equals(currentUser._id)) { %>
+      <form
+        method="post"
+        action="/listings/<%= listings._id%>/reviews/<%= review._id%>?_method=DELETE"
+        onsubmit="return confirm(`Do you want to delete Review?`)"
+      >
+        <button class="btn btn-sm btn-dark mb-2 mt-2">Delete</button>
+      </form>
+      <% } %>
     </div>
-    <form method="post" action="/listings/<%= listings._id%>/reviews/<%= review._id%>?_method=DELETE">
-      <button class="btn btn-sm btn-dark mb-2 mt-2">Delete</button>
-    </form>
-  </div>
-  <% } %> <% } else {%>
-    <div class="text-muted mt-1 mb-3">No reviews yet. Be the first to leave a review!</div>
+    <% } %> <% } else {%>
+    <div class="text-muted mt-1 mb-3">
+      No reviews yet. Be the first to leave a review!
+    </div>
     <% } %>
   </div>
 </div>
