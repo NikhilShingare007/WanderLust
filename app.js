@@ -1,3 +1,9 @@
+if (process.env.NODE_ENV != "production") {
+  require("dotenv").config();
+}
+
+const { getCoordinatesFromAddress } = require("./map.js");
+
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");

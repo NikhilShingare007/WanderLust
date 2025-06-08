@@ -1,11 +1,19 @@
-<% layout("/layouts/boilerplate")%>
+<% layout("/layouts/boilerplate")%> 
+<% if (typeof coords !== "undefined" && coords.coordinates[1] && coords.coordinates[1] ) { %>
+<script>
+  const lat = Number("<%- coords.coordinates[1] %>");
+  const lng = Number("<%- coords.coordinates[0] %>");
+  const listings = JSON.parse(decodeURIComponent("<%- encodeURIComponent(JSON.stringify(listings)) %>"));
+</script>
+<% } %>
+
 <div class="row">
   <div class="col-8 offset-3">
     <br /><br />
     <h3><strong><%= listings.title %></strong><br /></h3>
     <div class="card listing-card" style="width: 40rem">
       <img
-        src="<%=listings.image%>"
+        src="<%=listings.image.url%>"
         class="card-img-top mb-3"
         alt="listing_image"
         style="height: 16rem"
@@ -149,5 +157,20 @@
       </div>
       <% } %>
     </div>
+  </div>
+
+  <div class="col-8 offset-2 mb-3">
+    <hr />
+    <h4>Where you'll be</h4>
+    <% if (typeof coords !== "undefined" && coords.coordinates[1] && coords.coordinates[1] ) { %>
+      <div class="offset-1" id="map"></div>
+      <script src="/js/map.js"></script>
+      <script
+        async
+        src="https://maps.googleapis.com/maps/api/js?key=<%= process.env.MAP_API %>&callback=initMap"
+      ></script>
+    <% }else { %>
+      <p>We can't show map now!</p>
+    <% } %>
   </div>
 </div>
