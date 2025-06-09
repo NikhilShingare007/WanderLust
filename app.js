@@ -1,9 +1,6 @@
 if (process.env.NODE_ENV != "production") {
   require("dotenv").config();
 }
-
-const { getCoordinatesFromAddress } = require("./map.js");
-
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -74,9 +71,9 @@ app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
 app.use("/", userRouter);
 
-app.get("/", (req, res) => {
-  res.send("I am root");
-});
+// app.get("/", (req, res) => {
+//   res.send("I am root");
+// });
 
 app.use((err, req, res, next) => {
   let { status = 500, message = "Something went wrong" } = err;

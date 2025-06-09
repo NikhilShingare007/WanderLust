@@ -1,9 +1,51 @@
 const Listing = require("../models/listings.js");
 const { geocode } = require("../map.js");
 
+module.exports.search = async (req, res) => {
+  const { search } = req.query;
+
+  let filter = {};
+
+  if (search) {
+    const regex = new RegExp(search, "i"); // case-insensitive search
+    filter = {
+      $or: [
+        { title: regex },
+        { location: regex },
+        { description: regex },
+        { country: regex }
+      ]
+    };
+  }
+
+  const allListings = await Listing.find(filter);
+
+  res.render("listings/index", {
+    allListings,
+    search,
+    selectedField: null,
+    selectedCategory: "all",
+    hasResults: allListings.length > 0
+  });
+};
+
 module.exports.index = async (req, res) => {
-  const allListings = await Listing.find({});
-  res.render("listings/index.ejs", { allListings });
+  const { category } = req.query;
+
+  let filter = {};
+  const selectedCategory = category || "all";
+
+  if (selectedCategory !== "all") {
+    filter.categories = selectedCategory;
+  }
+
+  const allListings = await Listing.find(filter);
+
+  res.render("listings/index", {
+    allListings,
+    selectedCategory,
+    hasResults: allListings.length > 0, // ✅ add this
+  });
 };
 
 module.exports.renderNewForm = (req, res) => {

@@ -8,13 +8,21 @@ const listingSchema = new Schema({
     type: String,
     required: true,
   },
+
   description: {
     type: String,
   },
+
   image: {
     url: String,
     filename: String,
   },
+
+  categories : {
+    type : [String],
+    enum : ["trending", "beach", "rooms", "iconic cities", "mountains", "castles", "amazing pools", "camping", "river", "arctic"],
+  },
+
   price: {
     type: Number,
     required: true,
@@ -22,13 +30,16 @@ const listingSchema = new Schema({
   },
 
   location: String,
+
   country: String,
+
   reviews: [
     {
       type: Schema.Types.ObjectId,
       ref: "Review",
     },
   ],
+
   owner: {
     type: Schema.Types.ObjectId,
     ref: "User",
