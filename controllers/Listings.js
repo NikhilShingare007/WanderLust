@@ -13,8 +13,8 @@ module.exports.search = async (req, res) => {
         { title: regex },
         { location: regex },
         { description: regex },
-        { country: regex }
-      ]
+        { country: regex },
+      ],
     };
   }
 
@@ -25,7 +25,7 @@ module.exports.search = async (req, res) => {
     search,
     selectedField: null,
     selectedCategory: "all",
-    hasResults: allListings.length > 0
+    hasResults: allListings.length > 0,
   });
 };
 
@@ -71,7 +71,7 @@ module.exports.showListing = async (req, res) => {
   if (!coords || !coords.coordinates) {
     coords = await geocode(listings.country);
   }
-
+  console.log(coords);
   res.render("listings/show.ejs", { listings, coords });
 };
 
