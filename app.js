@@ -88,9 +88,9 @@ app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
 app.use("/", userRouter);
 
-// app.get("/", (req, res) => {
-//   res.send("I am root");
-// });
+app.get("/", (req, res) => {
+  res.redirect("/listings");
+});
 
 app.use((err, req, res, next) => {
   let { status = 500, message = "Something went wrong" } = err;
