@@ -32,7 +32,7 @@ coords.coordinates[1] && coords.coordinates[1] ) { %>
           <p class="card-text"><%= listings.location %></p>
           <p class="card-text"><%= listings.country %></p>
           <% if (currentUser && listings.owner._id.equals(currentUser._id)) { %>
-          <div class=" btn-show mt-2 d-flex gap-2">
+          <div class="btn-show mt-2 d-flex gap-2">
             <a
               href="/listings/<%= listings._id %>/edit"
               class="btn btn-outline-primary"
@@ -65,13 +65,27 @@ coords.coordinates[1] && coords.coordinates[1] ) { %>
         <div class="mb-3">
           <label for="rating" class="form-label">Rating</label>
           <fieldset class="starability-slot">
-            <% for (let i = 1; i <= 5; i++) { %> <input type="radio"
-            id="first-rate<%= i %>" name="review[rating]" value="<%= i %>" <%= i
-            === 1 ? 'checked' : '' %> />
+            <input
+              type="radio"
+              name="review[rating]"
+              id="no-rate"
+              class="visually-hidden"
+              value=""
+              checked
+            />
+
+            <% for (let i = 1; i <= 5; i++) { %>
+            <input
+              type="radio"
+              id="first-rate<%= i %>"
+              name="review[rating]"
+              value="<%= i %>"
+            />
             <label
               for="first-rate<%= i %>"
               title="<%= ['Terrible','Not good','Average','Very good','Amazing'][i - 1] %>"
-              ><%= i %> star<%= i > 1 ? 's' : '' %>
+            >
+              <%= i %> star<%= i > 1 ? 's' : '' %>
             </label>
             <% } %>
           </fieldset>

@@ -22,14 +22,20 @@ function initMap() {
     map: map,
     center: location,
     radius: 5000, // Adjust for size of glow
-    zIndex: 1 // Ensure it's under the marker
+    zIndex: 1, // Ensure it's under the marker
   });
 
   const infoWindow = new google.maps.InfoWindow({
     content: `<h4>${listings.title}</h4><p>Exact location will be provided after booking!</p>`,
   });
 
-  marker.addListener("click", () => {
-    infoWindow.open(map, marker, glowCircle);
+  // Show InfoWindow on hover
+  marker.addListener("mouseover", () => {
+    infoWindow.open(map, marker);
+  });
+
+  // Hide InfoWindow when mouse leaves
+  marker.addListener("mouseout", () => {
+    infoWindow.close();
   });
 }
